@@ -2,8 +2,8 @@
   "name": "travesty-userapi-test",
   "version": "1.0.0",
   "description": "Test project for Travesty user bot",
-  "main": "dist/TravestyClient.js",
-  "types": "dist/TravestyClient.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"
