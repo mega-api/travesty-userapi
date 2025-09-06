@@ -1,0 +1,22 @@
+{
+  "name": "travesty-userapi-test",
+  "version": "1.0.0",
+  "description": "Test project for Travesty user bot",
+  "main": "dist/TravestyClient.js",
+  "types": "dist/TravestyClient.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "events": "^3.3.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/events": "^3.0.3",
+    "@types/ws": "^8.18.1",
+    "axios": "^1.11.0"
+  }
+}
