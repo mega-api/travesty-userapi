@@ -1,4 +1,4 @@
-# travesty-userapi-test
+# travesty-userapi
 This library lets you turn your account into a robot/user bot
 
 # Contributing

@@ -2,6 +2,20 @@
   "name": "travesty-userapi",
   "version": "1.0.0",
   "description": "Interact with the Travesty Chat API under your user account",
+  "keywords": [
+    "travesty"
+  ],
+  "homepage": "https://github.com/mega-api/travesty-userapi-test#readme",
+  "bugs": {
+    "url": "https://github.com/mega-api/travesty-userapi-test/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mega-api/travesty-userapi-test.git"
+  },
+  "license": "UNLICENSED",
+  "author": "Mega Utilities' Mega API",
+  "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
