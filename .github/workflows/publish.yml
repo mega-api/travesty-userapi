@@ -21,9 +21,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Auto bump version
+      - name: Set package version from GitHub release
         run: |
-          npm version patch -m "ci: bump version to %s [skip ci]"
+          TAG_VERSION="${GITHUB_REF##*/}"
+          TAG_VERSION="${TAG_VERSION#v}"   # remove leading 'v' if your tag is v1.0.3
+          echo "Setting package.json version to $TAG_VERSION"
+          npm version $TAG_VERSION --no-git-tag-version
 
       - name: Build package
         run: npm run build
