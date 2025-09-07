@@ -1,6 +1,6 @@
 {
   "name": "@mega-utilities-company/travesty-userapi",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "Interact with the Travesty Chat API under your user account",
   "keywords": [
     "travesty",
