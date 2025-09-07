@@ -7,7 +7,7 @@ This library lets you turn your account into a robot/user bot
 
 ## Logging in
 ```js
-import { TravestyClient } from 'travesty-userapi-test';
+import { TravestyClient } from 'travesty-userapi';
 
 const client = new TravestyClient(); // The TravestyClient supports some additional arguments that we will touch on later
 
