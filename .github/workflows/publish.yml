@@ -12,11 +12,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js and authenticate for scoped packages
         uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+          scope: '@mega-utilities-company'
+          auth-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: npm install
@@ -24,17 +26,12 @@ jobs:
       - name: Set package version from GitHub release
         run: |
           TAG_VERSION="${GITHUB_REF##*/}"
-          TAG_VERSION="${TAG_VERSION#v}"   # remove leading 'v' if your tag is v1.0.3
+          TAG_VERSION="${TAG_VERSION#v}"
           echo "Setting package.json version to $TAG_VERSION"
           npm version $TAG_VERSION --no-git-tag-version
 
       - name: Build package
         run: npm run build
-
-      - name: Configure npm for scoped packages
-        run: |
-          npm config set @mega-utilities-company:registry https://registry.npmjs.org/
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       - name: Publish package
         run: npm publish --access public
