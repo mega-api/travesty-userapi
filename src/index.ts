@@ -97,7 +97,6 @@ interface TravestyClientEvents {
   reactionRemove: (evt: ReactionEvent) => void;
   memberRolesUpdate: (evt: MemberRolesUpdateEvent) => void;
   raw: (evt: TravestyRawEvent) => void;
-  logout: () => void;
 }
 
 //////////////////////////
@@ -165,27 +164,6 @@ export class TravestyClient extends EventEmitter {
 
     this.cookie = cookieHeader.split(';')[0];
     await this.connectWS();
-  }
-
-  //////////////////////
-  // Logout
-  //////////////////////
-  logout() {
-    this.cookie = null;
-    this.email = null;
-    this.password = null;
-
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
-    }
-
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = null;
-    }
-
-    this.emit('logout');
   }
 
   //////////////////////
@@ -358,4 +336,38 @@ export class TravestyClient extends EventEmitter {
       }
     );
   }
+
+    //////////////////////
+    // Join a Server -- MUST BE THE URL
+    //////////////////////
+    async joinServer(link: string) {
+      if (!this.cookie) throw new Error('You must login first');
+        await axios.post(
+        `${this.baseUrl}/api/guilds/join`,
+        { link },
+        {
+          headers: {
+            Cookie: this.cookie,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+}
+
+    //////////////////////
+    // Delete a Message
+    //////////////////////
+    async deleteMessage(messageId: string) {
+      if (!this.cookie) throw new Error('You must login first');
+        await axios.delete(
+        `${this.baseUrl}/api/messages/${messageId}`,
+        {
+          headers: {
+            Cookie: this.cookie,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+    }
+
 }
