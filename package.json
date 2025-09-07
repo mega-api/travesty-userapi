@@ -1,7 +1,7 @@
 {
-  "name": "travesty-userapi-test",
+  "name": "travesty-userapi",
   "version": "1.0.0",
-  "description": "Test project for Travesty user bot",
+  "description": "Interact with the Travesty Chat API under your user account",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
