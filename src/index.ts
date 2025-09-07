@@ -23,11 +23,11 @@ export interface MessageEvent {
 export interface TypingEvent {
   action: 'startTyping' | 'stopTyping';
   room: string;
-  message: string; // username
+  message: string;
 }
 
 export interface NotificationEvent {
-  id: string; // channelId
+  id: string;
   tags: any | null;
 }
 
@@ -135,7 +135,6 @@ export class TravestyClient extends EventEmitter {
     if (this.debug) console.warn('[WS]', ...args);
   }
 
-  // Override `on` and `emit` for typed events
   public on<K extends keyof TravestyClientEvents>(
     event: K,
     listener: TravestyClientEvents[K]
@@ -164,7 +163,7 @@ export class TravestyClient extends EventEmitter {
     if (!cookieHeader)
       throw new Error('Login failed, no session cookie received');
 
-    this.cookie = cookieHeader.split(';')[0]; // vlk=...
+    this.cookie = cookieHeader.split(';')[0];
     await this.connectWS();
   }
 
@@ -202,7 +201,6 @@ export class TravestyClient extends EventEmitter {
     this.ws.on('open', async () => {
       console.log('WS connected');
 
-      // Fetch guilds & channels
       try {
         const guildsRes = await this.axios.get('/api/guilds', {
           headers: { Cookie: this.cookie }
@@ -252,7 +250,7 @@ export class TravestyClient extends EventEmitter {
   }
 
   //////////////////////
-  // Reconnect
+  // Reconnect -- I haven't tested this so it might not work
   //////////////////////
   private async reconnect() {
     try {
@@ -288,7 +286,7 @@ export class TravestyClient extends EventEmitter {
         this.log(
           `[new_message] Message ID: ${msg.id}, Text: "${msg.text}"`
         );
-        this.lastMessage = msg; // wait for channelId
+        this.lastMessage = msg;
         break;
       }
 
@@ -297,7 +295,7 @@ export class TravestyClient extends EventEmitter {
         this.log('[new_notification]', notif);
 
         if (this.lastMessage) {
-          this.lastMessage.channelId = notif.id; // channelId
+          this.lastMessage.channelId = notif.id;
           this.log(
             `[messageCreate] Emitting message ID: ${this.lastMessage.id}, Channel: ${this.lastMessage.channelId}`
           );
@@ -344,6 +342,7 @@ export class TravestyClient extends EventEmitter {
 
   //////////////////////
   // Send message
+  // use client.SendMessage(channelId, text) -- DOCS SOON
   //////////////////////
   async sendMessage(channelId: string, text: string) {
     if (!this.cookie) throw new Error('You must login first');
