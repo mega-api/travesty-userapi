@@ -23,12 +23,13 @@ jobs:
 
       - name: Auto bump version
         run: |
-          # Bump patch version and create a git tag
           npm version patch -m "ci: bump version to %s [skip ci]"
-          git push --follow-tags
 
       - name: Build package
         run: npm run build
+
+      - name: Configure npm for scoped packages
+        run: npm config set @mega-utilities-company:registry https://registry.npmjs.org/
 
       - name: Publish package
         run: npm publish --access public
