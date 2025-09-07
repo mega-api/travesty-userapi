@@ -19,7 +19,13 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Auto bump version
+        run: |
+          # Bump patch version and create a git tag
+          npm version patch -m "ci: bump version to %s [skip ci]"
+          git push --follow-tags
 
       - name: Build package
         run: npm run build
