@@ -32,7 +32,9 @@ jobs:
         run: npm run build
 
       - name: Configure npm for scoped packages
-        run: npm config set @mega-utilities-company:registry https://registry.npmjs.org/
+        run: |
+          npm config set @mega-utilities-company:registry https://registry.npmjs.org/
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
 
       - name: Publish package
         run: npm publish --access public
