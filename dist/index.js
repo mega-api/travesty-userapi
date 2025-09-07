@@ -28,7 +28,6 @@ class TravestyClient extends events_1.EventEmitter {
         if (this.debug)
             console.warn('[WS]', ...args);
     }
-    // Override `on` and `emit` for typed events
     on(event, listener) {
         return super.on(event, listener);
     }
@@ -45,25 +44,8 @@ class TravestyClient extends events_1.EventEmitter {
         const cookieHeader = res.headers['set-cookie']?.find((c) => c.startsWith('vlk='));
         if (!cookieHeader)
             throw new Error('Login failed, no session cookie received');
-        this.cookie = cookieHeader.split(';')[0]; // vlk=...
+        this.cookie = cookieHeader.split(';')[0];
         await this.connectWS();
-    }
-    //////////////////////
-    // Logout
-    //////////////////////
-    logout() {
-        this.cookie = null;
-        this.email = null;
-        this.password = null;
-        if (this.ws) {
-            this.ws.close();
-            this.ws = null;
-        }
-        if (this.reconnectTimeout) {
-            clearTimeout(this.reconnectTimeout);
-            this.reconnectTimeout = null;
-        }
-        this.emit('logout');
     }
     //////////////////////
     // WebSocket connect
@@ -76,7 +58,6 @@ class TravestyClient extends events_1.EventEmitter {
         });
         this.ws.on('open', async () => {
             console.log('WS connected');
-            // Fetch guilds & channels
             try {
                 const guildsRes = await this.axios.get('/api/guilds', {
                     headers: { Cookie: this.cookie }
@@ -112,7 +93,7 @@ class TravestyClient extends events_1.EventEmitter {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
     //////////////////////
-    // Reconnect
+    // Reconnect -- I haven't tested this so it might not work
     //////////////////////
     async reconnect() {
         try {
@@ -146,14 +127,14 @@ class TravestyClient extends events_1.EventEmitter {
             case 'new_message': {
                 const msg = event.data;
                 this.log(`[new_message] Message ID: ${msg.id}, Text: "${msg.text}"`);
-                this.lastMessage = msg; // wait for channelId
+                this.lastMessage = msg;
                 break;
             }
             case 'new_notification': {
                 const notif = event.data;
                 this.log('[new_notification]', notif);
                 if (this.lastMessage) {
-                    this.lastMessage.channelId = notif.id; // channelId
+                    this.lastMessage.channelId = notif.id;
                     this.log(`[messageCreate] Emitting message ID: ${this.lastMessage.id}, Channel: ${this.lastMessage.channelId}`);
                     this.emit('messageCreate', this.lastMessage);
                     this.lastMessage = null;
@@ -192,11 +173,38 @@ class TravestyClient extends events_1.EventEmitter {
     }
     //////////////////////
     // Send message
+    // use client.SendMessage(channelId, text) -- DOCS SOON
     //////////////////////
     async sendMessage(channelId, text) {
         if (!this.cookie)
             throw new Error('You must login first');
         await axios_1.default.post(`${this.baseUrl}/api/channels/${channelId}/messages`, { text }, {
+            headers: {
+                Cookie: this.cookie,
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+    //////////////////////
+    // Join a Server -- MUST BE THE URL
+    //////////////////////
+    async joinServer(link) {
+        if (!this.cookie)
+            throw new Error('You must login first');
+        await axios_1.default.post(`${this.baseUrl}/api/guilds/join`, { link }, {
+            headers: {
+                Cookie: this.cookie,
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+    //////////////////////
+    // Delete a Message
+    //////////////////////
+    async deleteMessage(messageId) {
+        if (!this.cookie)
+            throw new Error('You must login first');
+        await axios_1.default.delete(`${this.baseUrl}/api/messages/${messageId}`, {
             headers: {
                 Cookie: this.cookie,
                 'Content-Type': 'application/json'
